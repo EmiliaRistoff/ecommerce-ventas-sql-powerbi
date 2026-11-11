@@ -1,0 +1,40 @@
+{
+  "name": "Ecommerce Analytics",
+  "dataColors": ["#1F3A5F", "#2A9D8F", "#E9C46A", "#F4A261", "#E76F51", "#6D597A", "#8D99AE", "#4D908E"],
+  "background": "#FFFFFF",
+  "foreground": "#2B2D42",
+  "tableAccent": "#1F3A5F",
+  "good": "#2A9D8F",
+  "neutral": "#E9C46A",
+  "bad": "#E76F51",
+  "maximum": "#1F3A5F",
+  "center": "#E9C46A",
+  "minimum": "#E76F51",
+  "textClasses": {
+    "callout": { "fontSize": 28, "fontFace": "Segoe UI Semibold", "color": "#1F3A5F" },
+    "title": { "fontSize": 12, "fontFace": "Segoe UI Semibold", "color": "#2B2D42" },
+    "header": { "fontSize": 12, "fontFace": "Segoe UI Semibold", "color": "#2B2D42" },
+    "label": { "fontSize": 10, "fontFace": "Segoe UI", "color": "#5C6370" }
+  },
+  "visualStyles": {
+    "page": {
+      "*": {
+        "background": [{ "color": { "solid": { "color": "#F4F6F8" } }, "transparency": 0 }]
+      }
+    },
+    "*": {
+      "*": {
+        "background": [{ "show": true, "color": { "solid": { "color": "#FFFFFF" } }, "transparency": 0 }],
+        "border": [{ "show": true, "color": { "solid": { "color": "#E3E8EE" } }, "radius": 8 }],
+        "title": [{ "show": true, "fontColor": { "solid": { "color": "#2B2D42" } }, "fontSize": 12, "fontFamily": "Segoe UI Semibold", "alignment": "left" }],
+        "dropShadow": [{ "show": false }]
+      }
+    },
+    "card": {
+      "*": {
+        "labels": [{ "color": { "solid": { "color": "#1F3A5F" } }, "fontSize": 28, "fontFamily": "Segoe UI Semibold" }],
+        "categoryLabels": [{ "show": true, "color": { "solid": { "color": "#5C6370" } }, "fontSize": 11 }]
+      }
+    }
+  }
+}

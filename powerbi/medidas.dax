@@ -1,0 +1,66 @@
+// ============================================================
+// medidas.dax  |  Pegar cada bloque con "Nueva medida" / "Nueva tabla"
+// Fuente: vista vw_ventas (una fila por línea de orden)
+// Criterio: las ventas excluyen órdenes 'Cancelado'
+// ============================================================
+
+// ---------- TABLA (Nueva tabla) ----------
+// Luego: Herramientas de tabla > Marcar como tabla de fechas (columna Date)
+// y relación Calendario[Date] (1) -> vw_ventas[fecha] (*)
+Calendario =
+ADDCOLUMNS (
+    CALENDAR (
+        DATE ( YEAR ( MIN ( vw_ventas[fecha] ) ), MONTH ( MIN ( vw_ventas[fecha] ) ), 1 ),
+        EOMONTH ( MAX ( vw_ventas[fecha] ), 0 )
+    ),
+    "Año", YEAR ( [Date] ),
+    "Mes N", MONTH ( [Date] ),
+    "Año-Mes", FORMAT ( [Date], "yyyy-mm" )
+)
+
+// ---------- MEDIDAS BASE (Nueva medida) ----------
+Ventas =
+CALCULATE ( SUM ( vw_ventas[subtotal] ), vw_ventas[estado_orden] <> "Cancelado" )
+
+Órdenes =
+CALCULATE ( DISTINCTCOUNT ( vw_ventas[orden_id] ), vw_ventas[estado_orden] <> "Cancelado" )
+
+Unidades vendidas =
+CALCULATE ( SUM ( vw_ventas[cantidad] ), vw_ventas[estado_orden] <> "Cancelado" )
+
+Ticket promedio =
+DIVIDE ( [Ventas], [Órdenes] )
+
+// ---------- CANCELACIONES ----------
+Órdenes totales =
+DISTINCTCOUNT ( vw_ventas[orden_id] )
+
+Órdenes canceladas =
+CALCULATE ( DISTINCTCOUNT ( vw_ventas[orden_id] ), vw_ventas[estado_orden] = "Cancelado" )
+
+Tasa de cancelación =
+DIVIDE ( [Órdenes canceladas], [Órdenes totales] )
+
+// ---------- TIEMPO (requieren la tabla Calendario) ----------
+Ventas mes anterior =
+CALCULATE ( [Ventas], DATEADD ( Calendario[Date], -1, MONTH ) )
+
+Variación vs mes anterior % =
+DIVIDE ( [Ventas] - [Ventas mes anterior], [Ventas mes anterior] )
+
+Ventas YTD =
+TOTALYTD ( [Ventas], Calendario[Date] )
+
+// ---------- PARTICIPACIÓN Y CLIENTES ----------
+% de ventas =
+DIVIDE ( [Ventas], CALCULATE ( [Ventas], ALLSELECTED ( vw_ventas ) ) )
+
+Clientes compradores =
+CALCULATE ( DISTINCTCOUNT ( vw_ventas[cliente_id] ), vw_ventas[estado_orden] <> "Cancelado" )
+
+Clientes recurrentes =
+COUNTROWS ( FILTER ( VALUES ( vw_ventas[cliente_id] ), [Órdenes] >= 2 ) )
+
+// Compradores con 2 o más órdenes sobre el total de compradores
+% Clientes que repiten =
+DIVIDE ( [Clientes recurrentes], [Clientes compradores] )
